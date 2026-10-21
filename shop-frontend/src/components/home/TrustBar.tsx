@@ -1,7 +1,7 @@
-import { CreditCard, Headset, ShieldCheck, Truck } from "lucide-react";
+import { CreditCard, Headset, ShieldCheck,  Store } from "lucide-react";
 
 const items = [
-  { icon: Truck, title: "Fast delivery", text: "Nairobi and countrywide shipping" },
+  { icon: Store, title: "Easy pickup", text: "Order online, collect from our shop" },
   { icon: CreditCard, title: "Pay with M-Pesa", text: "Easy, secure checkout" },
   { icon: ShieldCheck, title: "Quality guaranteed", text: "Genuine products, warranty included" },
   { icon: Headset, title: "Friendly support", text: "Call or WhatsApp us anytime" },

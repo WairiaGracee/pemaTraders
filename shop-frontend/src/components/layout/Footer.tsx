@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { MapPin, Mail, Phone, Clock } from "lucide-react";
 import { SHOP } from "@/lib/config";
-import { categories } from "@/data/mock";
+import { useCategories } from "@/hooks/useCatalog";
+
 
 export default function Footer() {
+  const { categories } = useCategories();
+
   return (
     <footer className="mt-16 bg-ink text-neutral-300">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">

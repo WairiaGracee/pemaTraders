@@ -3,7 +3,7 @@ import {
   BedDouble, Lamp, Layers, Library, Smartphone, Sofa, Tv, UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
-import { categories } from "@/data/mock";
+import { useCategories } from "@/hooks/useCatalog";
 
 const icons: Record<string, LucideIcon> = {
   electronics: Smartphone,
@@ -17,6 +17,7 @@ const icons: Record<string, LucideIcon> = {
 };
 
 export default function CategoryGrid() {
+  const { categories } = useCategories();
   return (
     <section className="mx-auto max-w-7xl px-4 pt-12">
       <h2 className="text-2xl font-bold">Shop popular categories</h2>

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, Minus, Plus, ShoppingBag, Trash2, Truck, MessageCircle } from "lucide-react";
+import { ChevronRight, Minus, Plus, ShoppingBag, Trash2, MessageCircle } from "lucide-react";
 import { useCart, selectSavings, selectSubtotal } from "@/store/cartStore";
 import { formatKES } from "@/lib/format";
-import { FREE_DELIVERY_MIN, SHOP } from "@/lib/config";
+import { SHOP } from "@/lib/config";
 
 export default function Cart() {
   const items = useCart((s) => s.items);
@@ -11,9 +11,6 @@ export default function Cart() {
   const setQty = useCart((s) => s.setQty);
   const remove = useCart((s) => s.remove);
   const clear = useCart((s) => s.clear);
-
-  const remaining = Math.max(FREE_DELIVERY_MIN - subtotal, 0);
-  const progress = Math.min((subtotal / FREE_DELIVERY_MIN) * 100, 100);
 
   const whatsappLink = () => {
     const lines = items.map(
@@ -63,43 +60,28 @@ export default function Cart() {
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         {/* Items */}
         <div className="space-y-4">
-          {/* Free delivery progress */}
-          <div className="rounded-xl border border-neutral-200 bg-white p-4">
-            <div className="flex items-center gap-2 text-sm">
-              <Truck size={18} className="text-brand-dark" />
-              {remaining > 0 ? (
-                <span>
-                  Add <strong>{formatKES(remaining)}</strong> more for free delivery in Nairobi
-                </span>
-              ) : (
-                <span className="font-semibold text-green-600">
-                  You qualify for free delivery in Nairobi!
-                </span>
-              )}
-            </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-neutral-100">
-              <div
-                className="h-full rounded-full bg-brand transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
 
           {items.map(({ product, qty }) => (
             <div
               key={product.id}
               className="flex gap-4 rounded-xl border border-neutral-200 bg-white p-4"
             >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-24 w-24 shrink-0 rounded-lg object-cover sm:h-28 sm:w-28"
-              />
-
+                <Link to={`/product/${product.slug}`}>
+                  <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-24 w-24 shrink-0 rounded-lg object-cover sm:h-28 sm:w-28"
+                  />
+                </Link>
+                
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex justify-between gap-3">
                   <div>
-                    <h3 className="font-medium leading-snug">{product.name}</h3>
+                    <h3 className="font-medium leading-snug">
+                      <Link to={`/product/${product.slug}`} className="hover:text-brand-dark">
+                        {product.name}
+                      </Link>
+                    </h3>
                     <div className="mt-1 text-sm">
                       <span className="font-bold text-brand-dark">{formatKES(product.price)}</span>
                       {product.compareAtPrice && (
@@ -163,12 +145,6 @@ export default function Cart() {
                 <dd className="font-medium">-{formatKES(savings)}</dd>
               </div>
             )}
-            <div className="flex justify-between">
-              <dt className="text-neutral-500">Delivery</dt>
-              <dd className="font-medium">
-                {remaining === 0 ? "Free (Nairobi)" : "Calculated at checkout"}
-              </dd>
-            </div>
           </dl>
 
           <div className="mt-5 flex justify-between border-t border-neutral-200 pt-5 text-lg font-extrabold">
@@ -193,7 +169,7 @@ export default function Cart() {
           </a>
 
           <p className="mt-4 text-center text-xs text-neutral-500">
-            Pay securely with M-Pesa at checkout
+            Collect from our shop. Pay with M-Pesa or at pickup.
           </p>
         </aside>
       </div>

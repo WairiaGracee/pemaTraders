@@ -1,10 +1,13 @@
 import { useSearchParams } from "react-router-dom";
-import { products } from "@/data/mock";
+import { useProducts } from "@/hooks/useCatalog";
 import ProductListing from "@/components/product/ProductListing";
 
 export default function Shop() {
   const [params] = useSearchParams();
+  const { products, isLoading } = useProducts();
   const q = (params.get("q") ?? "").trim().toLowerCase();
+
+  if (isLoading) return <div className="py-24 text-center text-neutral-500">Loading...</div>;
 
   const items = q ? products.filter((p) => p.name.toLowerCase().includes(q)) : products;
 

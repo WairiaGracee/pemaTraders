@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { categories, products } from "@/data/mock";
+import { useCategories, useProducts } from "@/hooks/useCatalog";
 
 export interface Filters {
   min: string;
@@ -17,6 +17,8 @@ interface Props {
 }
 
 export default function FilterPanel({ filters, onChange, activeSlug }: Props) {
+  const { categories } = useCategories();
+  const { products } = useProducts();
   const hasFilters = JSON.stringify(filters) !== JSON.stringify(defaultFilters);
 
   return (

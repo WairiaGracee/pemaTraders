@@ -2,15 +2,18 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, Phone, Search, ShoppingCart, User, X } from "lucide-react";
 import { SHOP } from "@/lib/config";
-import { categories } from "@/data/mock";
-import { useCart } from "@/store/cartStore";
+import { useCategories } from "@/hooks/useCatalog";
+import { useCart, selectCount } from "@/store/cartStore";
+import { useAuth } from "@/store/AuthContext";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const count = useCart((s) => s.items.reduce((n, i) => n + i.qty, 0));
-
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const count = useCart(selectCount);
+  const { user, profile } = useAuth();
+  const { categories } = useCategories();
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) navigate(`/shop?q=${encodeURIComponent(query.trim())}`);
@@ -21,7 +24,7 @@ export default function Header() {
       {/* Top bar */}
       <div className="bg-ink text-xs text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2">
-          <span className="hidden sm:block">Free delivery within Nairobi on orders over KES 20,000</span>
+          <span className="hidden sm:block">Collect from our shop: {SHOP.hours}</span>
           <span className="flex items-center gap-1 sm:ml-auto">
             <Phone size={12} /> {SHOP.phone}
           </span>
@@ -42,28 +45,36 @@ export default function Header() {
         </Link>
 
         <form onSubmit={submitSearch} className="relative mx-auto hidden max-w-xl flex-1 md:block">
-  <input
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-    placeholder="Search for TVs, sofas, carpets, duvets..."
-    className="w-full rounded-full border border-neutral-300 bg-neutral-50 py-2.5 pl-5 pr-12 text-sm outline-none focus:border-brand"
-  />
-  <button type="submit" aria-label="Search" className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand">
-    <Search size={18} />
-  </button>
-</form>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for TVs, sofas, carpets, duvets..."
+            className="w-full rounded-full border border-neutral-300 bg-neutral-50 py-2.5 pl-5 pr-12 text-sm outline-none focus:border-brand"
+          />
+          <button
+            type="submit"
+            aria-label="Search"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-brand"
+          >
+            <Search size={18} />
+          </button>
+        </form>
 
         <div className="ml-auto flex items-center gap-5 md:ml-0">
-          <button className="hidden items-center gap-1 text-sm sm:flex">
-            <User size={20} /> Account
-          </button>
+          <Link to={user ? "/account" : "/login"} className="flex items-center gap-1 text-sm">
+            <User size={20} />
+            <span className="hidden sm:inline">
+              {user ? profile?.full_name?.split(" ")[0] ?? "Account" : "Sign in"}
+            </span>
+          </Link>
+
           <Link to="/cart" className="relative flex items-center gap-1 text-sm">
             <ShoppingCart size={22} />
             <span className="hidden sm:block">Cart</span>
             {count > 0 && (
-                <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-brand text-[11px] font-bold text-white">
+              <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-brand text-[11px] font-bold text-white">
                 {count}
-                </span>
+              </span>
             )}
           </Link>
         </div>

@@ -48,7 +48,7 @@ export const useCart = create<CartState>()(
 
       clear: () => set({ items: [] }),
     }),
-    { name: "pema-cart" }
+    { name: "pema-cart-v2" } 
   )
 );
 

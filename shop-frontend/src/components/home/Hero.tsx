@@ -16,7 +16,7 @@ const slides: Slide[] = [
     image: "/images/hero/Living-Room.jpg",
     eyebrow: "Living room",
     title: "Everything for a home you love.",
-    text: "Sofas, wall units and TV stands, delivered to your door.",
+    text: "Sofas, wall units and TV stands, ready to collect from our shop.",
     cta: { label: "Shop furniture", to: "/category/furniture" },
   },
   {

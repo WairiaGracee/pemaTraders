@@ -1,9 +1,16 @@
 import { Link, useParams } from "react-router-dom";
-import { categories, products } from "@/data/mock";
+import { useCategories, useProducts } from "@/hooks/useCatalog";
 import ProductListing from "@/components/product/ProductListing";
 
 export default function Category() {
   const { slug } = useParams();
+  const { categories, isLoading: loadingCategories } = useCategories();
+  const { products, isLoading: loadingProducts } = useProducts();
+
+  if (loadingCategories || loadingProducts) {
+    return <div className="py-24 text-center text-neutral-500">Loading...</div>;
+  }
+
   const category = categories.find((c) => c.slug === slug);
 
   if (!category) {
@@ -19,7 +26,7 @@ export default function Category() {
 
   return (
     <ProductListing
-      key={category.slug} // resets filters when switching categories
+      key={category.slug}
       title={category.name}
       description={category.description}
       activeSlug={category.slug}
