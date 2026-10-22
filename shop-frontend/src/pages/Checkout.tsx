@@ -119,7 +119,7 @@ export default function Checkout() {
     });
 
     placed.current = true;
-    navigate(`/order-success/${order.id}`);
+    navigate(`/order-success/${order.id}`, { state: { pay: v.payment === "mpesa" } });
     clear();
   } catch (e) {
     const msg = (e as { message?: string })?.message ?? "";
@@ -207,7 +207,7 @@ export default function Checkout() {
                   />
                 </Field>
                 <p className="mt-2 text-xs text-neutral-500">
-                  Live M-Pesa payment prompts are coming soon. For now, we'll confirm your order and send payment details.
+                  You'll get an M-Pesa prompt on this number right after you place your order.
                 </p>
               </div>
             )}

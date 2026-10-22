@@ -121,3 +121,16 @@ export async function updateOrder(
   const { error } = await supabase.from("orders").update(update).eq("id", id);
   if (error) throw error;
 }
+
+export async function adminFetchReceipts(): Promise<Record<string, string>> {
+  const { data, error } = await supabase
+    .from("payments")
+    .select("order_id, mpesa_receipt")
+    .eq("status", "success");
+  if (error) throw error;
+  const map: Record<string, string> = {};
+  (data as { order_id: string; mpesa_receipt: string | null }[]).forEach((p) => {
+    if (p.mpesa_receipt) map[p.order_id] = p.mpesa_receipt;
+  });
+  return map;
+}

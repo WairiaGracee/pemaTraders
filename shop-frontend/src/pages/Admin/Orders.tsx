@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, MessageCircle, Phone, Search } from "lucide-react";
-import { adminFetchOrders, updateOrder } from "@/lib/admin";
 import { formatKES } from "@/lib/format";
 import { ORDER_STATUSES, statusLabel, statusStyle } from "@/lib/orderStatus";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import type { Order, OrderStatus } from "@/types/order";
+import { adminFetchOrders, adminFetchReceipts, updateOrder } from "@/lib/admin";
 
 export default function AdminOrders() {
   const qc = useQueryClient();
   const { data: orders, isLoading, error } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: adminFetchOrders,
+    refetchInterval: 30_000,
+  });
+  const { data: receipts } = useQuery({
+    queryKey: ["admin-receipts"],
+    queryFn: adminFetchReceipts,
+    refetchInterval: 30_000,
   });
 
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
@@ -26,6 +32,7 @@ export default function AdminOrders() {
     onSuccess: () => {
       setMsg("");
       qc.invalidateQueries({ queryKey: ["admin-orders"] });
+      qc.invalidateQueries({ queryKey: ["admin-receipts"] });
       qc.invalidateQueries({ queryKey: ["admin-products"] }); // cancelling returns stock
       qc.invalidateQueries({ queryKey: ["products"] });
     },
@@ -88,6 +95,7 @@ export default function AdminOrders() {
           {shown.map((o) => {
             const open = openId === o.id;
             const locked = o.status === "cancelled";
+            const receipt = receipts?.[o.id];
             return (
               <li key={o.id} className="rounded-xl border border-neutral-200 bg-white">
                 <button
@@ -163,6 +171,11 @@ export default function AdminOrders() {
                         <p className={`font-semibold ${o.payment.status === "paid" ? "text-green-600" : "text-amber-700"}`}>
                           {o.payment.status === "paid" ? "Paid" : "Not paid yet"}
                         </p>
+                        {receipt && (
+                          <p className="text-neutral-600">
+                            M-Pesa code: <span className="font-semibold text-ink">{receipt}</span>
+                          </p>
+                        )}
                         {o.notes && (
                           <p className="mt-2 text-neutral-600">
                             <span className="font-semibold text-ink">Notes:</span> {o.notes}
